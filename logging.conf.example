@@ -2,7 +2,7 @@
 keys=root,logUploader
 
 [handlers]
-keys=fileHandler, consoleHandler
+keys=timedRotatingFileHandler, consoleHandler
 
 [formatters]
 keys=myFormatter
@@ -13,7 +13,7 @@ handlers=consoleHandler
 
 [logger_logUploader]
 level=INFO
-handlers=fileHandler
+handlers=timedRotatingFileHandler
 qualname=logUploader
 
 [handler_consoleHandler]
@@ -22,10 +22,11 @@ level=DEBUG
 formatter=myFormatter
 args=(sys.stdout,)
 
-[handler_fileHandler]
-class=FileHandler
+[handler_timedRotatingFileHandler]
+class=handlers.TimedRotatingFileHandler
+level=INFO
 formatter=myFormatter
-args=("uploader.log",)
+args=('./logs/uploader.log', 'D', 1, 5, None, False, False)
 
 [formatter_myFormatter]
 format=%(asctime)s - %(name)s - %(levelname)s - %(message)s
