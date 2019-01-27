@@ -5,6 +5,7 @@ import sys
 import re
 import zipfile
 import requests
+import datetime
 
 params = {}
 logger = None
@@ -15,6 +16,24 @@ def process_file(full_name, file_data):
     global logger
 
     base_name = file_data["date"] + "_" + file_data["gameid"]
+
+    # Make sure we are not archiving the active file
+    f = open(full_name, 'r')
+    lines = f.readlines()
+    f.close()
+    last_line = lines[-1]
+    ld = re.search(r"\[(?P<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}).[0-9]{3}.*", last_line)
+
+    if not ld:
+        logger.warning("Invalid format of last line in file: {}".format(full_name))
+        return
+
+    time_now = datetime.datetime.utcnow()
+    time_log = datetime.datetime.strptime(ld.group("datetime"), "%Y-%m-%d %H:%M:%S")
+
+    if time_now < time_log + datetime.timedelta(minutes=30):
+        logger.info("Skipping File due to insufficient age: {}".format(full_name))
+        return
 
     zipfile_path = os.path.join(params["archive_path"], base_name + ".zip")
     logger.debug("Creating ZIP File at: {}".format(zipfile_path))
@@ -59,7 +78,7 @@ def main(argv):
         with open('config.json', 'r') as f:
             params = json.load(f)
     except Exception as ex:
-        print("Error while loading config.json. "+ex)
+        print("Error while loading config.json. " + ex)
         return 1
 
     count_files = 0
@@ -71,7 +90,7 @@ def main(argv):
         if "_runtime" in root:
             continue
         for f_name in f_names:
-            count_files = count_files+1
+            count_files = count_files + 1
             full_name = os.path.join(root, f_name)
             stub_name = full_name.replace(params["log_path"], "")
             logger.debug("found full_name: {}".format(full_name))
@@ -81,12 +100,13 @@ def main(argv):
                 r"^\\(?P<year>[0-9]{4})\\(?P<month>[0-9]{2})\\(?P<day>[0-9]{2})_(?P<gameid>[a-zA-Z0-9]{3}-[a-zA-Z0-9]{4})\.log$")
             m = p.search(stub_name)
             if m:
+                file_date = "{}-{}-{}".format(m.group("year"), m.group("month"), m.group("day"))
                 count_processed = count_processed + 1
                 file_data = {
-                    "date": "{}-{}-{}".format(m.group("year"), m.group("month"), m.group("day")),
+                    "date": file_date,
                     "gameid": m.group("gameid")
                 }
-                logger.debug("processing file {} with data: {}".format(stub_name,file_data))
+                logger.debug("processing file {} with data: {}".format(stub_name, file_data))
 
                 # If so, then process it
                 process_file(full_name, file_data)
