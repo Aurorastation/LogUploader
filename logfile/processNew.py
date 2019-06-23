@@ -11,7 +11,7 @@ def process(full_name, file_data, params):
     base_name = file_data["date"] + "_" + file_data["gameid"]
 
     # Make sure we are not archiving the active file
-    f = open(full_name, 'r')
+    f = open(full_name, 'r', encoding="utf8")
     lines = f.readlines()
     f.close()
     last_line = lines[-1]
