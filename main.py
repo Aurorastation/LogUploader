@@ -39,6 +39,7 @@ def main(argv):
             full_name = os.path.join(root, f_name)
             stub_name = full_name.replace(params["log_path"], "")
             logger.debug("found full_name: {}".format(full_name))
+            logger.debug("found stub_name: {}".format(stub_name))
 
             # Check if we have a properly named logfile:
             p = re.compile(
