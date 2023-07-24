@@ -43,7 +43,7 @@ def main(argv):
 
             # Check if we have a properly named logfile:
             p = re.compile(
-                r"^\\(?P<year>[0-9]{4})\\(?P<month>[0-9]{2})\\(?P<day>[0-9]{2})_(?P<gameid>[a-zA-Z0-9]{3}-[a-zA-Z0-9]{4})\.log$")
+                r"^\/(?P<year>[0-9]{4})\/(?P<month>[0-9]{2})\/(?P<day>[0-9]{2})_(?P<gameid>[a-zA-Z0-9]{3}-[a-zA-Z0-9]{4})\.log$")
             m = p.search(stub_name)
             if m:
                 file_date = "{}-{}-{}".format(m.group("year"), m.group("month"), m.group("day"))
