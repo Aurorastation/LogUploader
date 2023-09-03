@@ -1,6 +1,14 @@
 {
-  "api_url": "",
-  "api_key": "",
   "log_path": "",
-  "archive_path": ""
+  "s3_url": "",
+  "s3_bucket": "",
+  "s3_bucket_path": "",
+  "s3_secret_key": "",
+  "s3_access_key": "",
+  "s3_max_bandwidth_mb": 5,
+  "wi_url": "http://localhost:8085/api/server/log/register",
+  "wi_key": "",
+  "archive_path": "",
+  "archive": 1,
+  "time_before_upload_min": 30
 }
