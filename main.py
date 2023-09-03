@@ -55,7 +55,7 @@ def main(argv):
         time_diff = (time.time() - latest_time) / 60
         logger.debug("Last mtime for folder {}: {}".format(folder, time_formatted))
         logger.debug("Time diff for folder {}: {} min".format(folder, time_diff))
-        if time_diff < params["time_before_upload_min"]:
+        if time_diff < int(params["time_before_upload_min"]):
             logger.info(
                 "Last Log files in {} are too recent: {:.2f} min. Need to be {} - Skipping further processing".format(
                     folder, time_diff, params["time_before_upload_min"]))
